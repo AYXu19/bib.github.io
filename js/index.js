@@ -89,10 +89,13 @@ async function laadItems() {
         `;
     });
 }
-const typeSelect = document.getElementById("type");
-const genreGroups = document.querySelectorAll(".genre-group");
 
 function updateGenres() {
+    const typeSelect = document.getElementById("type");
+    const genreGroups = document.querySelectorAll(".genre-group");
+    
+    if (!typeSelect) return;
+    
     const selectedType = typeSelect.value;
 
     genreGroups.forEach(group => {
@@ -111,12 +114,6 @@ function updateGenres() {
         }
     });
 }
-
-typeSelect.addEventListener("change", updateGenres);
-
-// Run on page load
-updateGenres();
-
 
 // Item verwijderen
 async function verwijderItem(id) {
@@ -147,8 +144,7 @@ async function bewerkItem(id) {
     document.getElementById("submitBtn").textContent = "Bijwerken";
 }
 
-// Formulier submit: toevoegen of bijwerken
-document.getElementById("itemForm").addEventListener("submit", async (e) => {
+async function handleFormSubmit(e) {
     e.preventDefault();
 
     // Upload bestand als er een gekozen is
@@ -201,13 +197,8 @@ document.getElementById("itemForm").addEventListener("submit", async (e) => {
 
     // Herlaad lijst
     await laadItems();
-});
+}
 
-    // Reset form en herlaad lijst
-    e.target.reset();
-    document.getElementById("itemId").value = "";
-    laadItems();
-});
 function removeDuplicateGenres() {
     document.querySelectorAll(".genre-group").forEach(group => {
         const seen = new Set();
@@ -224,14 +215,19 @@ function removeDuplicateGenres() {
     });
 }
 
-// Run after DOM loads
+// Run after DOM loads - All initialization happens here
 document.addEventListener("DOMContentLoaded", async () => {
+    const typeSelect = document.getElementById("type");
+    if (typeSelect) {
+        typeSelect.addEventListener("change", updateGenres);
+        updateGenres();
+    }
+    
+    const itemForm = document.getElementById("itemForm");
+    if (itemForm) {
+        itemForm.addEventListener("submit", handleFormSubmit);
+    }
+    
     await laadItems();
     removeDuplicateGenres();
 });
-console.log("Shounen: Jongens, actie, avontuur, vriendschap, rivaliteit.");
-console.log("Shoujo: Meisjes, romantiek, relaties, emotie, persoonlijke groei.");
-console.log("Seinen: Volwassen mannen, complexere thema's, vaak realistischer en donkerder.");
-console.log("Josei: Volwassen vrouwen, emotioneel drama, realistische relaties.");
-console.log("Isekai: Verhalen over mensen die in een andere wereld terechtkomen, vaak met fantasy-elementen.");
-console.log("mecha: Verhalen over robots of mechanische suits, vaak met actie en avontuur.");
