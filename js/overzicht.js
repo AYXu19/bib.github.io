@@ -1,7 +1,37 @@
+// IndexedDB helpers
+function openDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('bib', 1);
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('items')) {
+                db.createObjectStore('items', { keyPath: 'id', autoIncrement: true });
+            }
+        };
+        request.onsuccess = (event) => {
+            resolve(event.target.result);
+        };
+        request.onerror = (event) => {
+            reject(event.target.error);
+        };
+    });
+}
+
+async function getAllItems() {
+    const db = await openDB();
+    const transaction = db.transaction(['items'], 'readonly');
+    const store = transaction.objectStore('items');
+    const request = store.getAll();
+    return new Promise((resolve, reject) => {
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
 let allItems = [];
 
-function laadItems() {
-  allItems = JSON.parse(localStorage.getItem('bibliotheekItems') || '[]');
+async function laadItems() {
+  allItems = await getAllItems();
   // Sorteer op ID aflopend (nieuwste eerst)
   allItems.sort((a, b) => b.id - a.id);
   
@@ -102,20 +132,30 @@ function resetFilters() {
   toonItems(allItems);
 }
 
-function verwijderItem(id) {
+async function deleteItem(id) {
+    const db = await openDB();
+    const transaction = db.transaction(['items'], 'readwrite');
+    const store = transaction.objectStore('items');
+    const request = store.delete(id);
+    return new Promise((resolve, reject) => {
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function verwijderItem(id) {
   if (confirm("Weet je zeker dat je dit wilt verwijderen?")) {
-    allItems = allItems.filter(item => item.id !== id);
-    localStorage.setItem('bibliotheekItems', JSON.stringify(allItems));
-    laadItems();
+    await deleteItem(id);
+    await laadItems();
   }
 }
 
 // Event listeners voor filteren
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("typeFilter").addEventListener("change", filterItems);
   document.getElementById("genreFilter").addEventListener("change", filterItems);
   document.getElementById("statusFilter").addEventListener("change", filterItems);
   document.getElementById("resetBtn").addEventListener("click", resetFilters);
   
-  laadItems();
+  await laadItems();
 });

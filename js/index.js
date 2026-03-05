@@ -1,6 +1,69 @@
+// IndexedDB helpers
+function openDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('bib', 1);
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('items')) {
+                db.createObjectStore('items', { keyPath: 'id', autoIncrement: true });
+            }
+        };
+        request.onsuccess = (event) => {
+            resolve(event.target.result);
+        };
+        request.onerror = (event) => {
+            reject(event.target.error);
+        };
+    });
+}
+
+async function getAllItems() {
+    const db = await openDB();
+    const transaction = db.transaction(['items'], 'readonly');
+    const store = transaction.objectStore('items');
+    const request = store.getAll();
+    return new Promise((resolve, reject) => {
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function saveItem(item) {
+    const db = await openDB();
+    const transaction = db.transaction(['items'], 'readwrite');
+    const store = transaction.objectStore('items');
+    const request = store.put(item);
+    return new Promise((resolve, reject) => {
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function deleteItem(id) {
+    const db = await openDB();
+    const transaction = db.transaction(['items'], 'readwrite');
+    const store = transaction.objectStore('items');
+    const request = store.delete(id);
+    return new Promise((resolve, reject) => {
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function getItem(id) {
+    const db = await openDB();
+    const transaction = db.transaction(['items'], 'readonly');
+    const store = transaction.objectStore('items');
+    const request = store.get(id);
+    return new Promise((resolve, reject) => {
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
 // Functie om alle items op te halen en tonen
-function laadItems() {
-    const data = JSON.parse(localStorage.getItem('bibliotheekItems') || '[]');
+async function laadItems() {
+    const data = await getAllItems();
 
     // Sorteer op ID aflopend (nieuwste eerst)
     data.sort((a, b) => b.id - a.id);
@@ -56,19 +119,16 @@ updateGenres();
 
 
 // Item verwijderen
-function verwijderItem(id) {
+async function verwijderItem(id) {
     if (confirm("Weet je zeker dat je dit wilt verwijderen?")) {
-        let items = JSON.parse(localStorage.getItem('bibliotheekItems') || '[]');
-        items = items.filter(item => item.id !== id);
-        localStorage.setItem('bibliotheekItems', JSON.stringify(items));
-        laadItems();
+        await deleteItem(id);
+        await laadItems();
     }
 }
 
 // Item bewerken: vul het formulier
-function bewerkItem(id) {
-    const data = JSON.parse(localStorage.getItem('bibliotheekItems') || '[]');
-    const item = data.find(i => i.id === id);
+async function bewerkItem(id) {
+    const item = await getItem(id);
 
     document.getElementById("itemForm").style.display = "block";
     document.getElementById("itemId").value = item.id;
@@ -122,29 +182,25 @@ document.getElementById("itemForm").addEventListener("submit", async (e) => {
         datum: document.getElementById("datum") ? document.getElementById("datum").value : null
     };
 
-    let items = JSON.parse(localStorage.getItem('bibliotheekItems') || '[]');
     const itemId = document.getElementById("itemId").value;
 
     if (itemId) {
         // UPDATE item
-        const index = items.findIndex(item => item.id == itemId);
-        if (index !== -1) {
-            nieuwItem.id = parseInt(itemId);
-            items[index] = nieuwItem;
-        }
+        nieuwItem.id = parseInt(itemId);
+        await saveItem(nieuwItem);
         document.getElementById("submitBtn").textContent = "Opslaan";
     } else {
         // Nieuw item
-        const maxId = items.length > 0 ? Math.max(...items.map(item => item.id)) : 0;
-        nieuwItem.id = maxId + 1;
-        items.push(nieuwItem);
-        // Redirect naar overzicht na toevoegen
-        window.location.href = "index.html";
-        return;
+        await saveItem(nieuwItem);
     }
 
-    localStorage.setItem('bibliotheekItems', JSON.stringify(items));
-    laadItems();
+    // Reset formulier
+    e.target.reset();
+    document.getElementById("itemId").value = "";
+    document.getElementById("submitBtn").textContent = "Opslaan";
+
+    // Herlaad lijst
+    await laadItems();
 });
 
     // Reset form en herlaad lijst
@@ -169,11 +225,10 @@ function removeDuplicateGenres() {
 }
 
 // Run after DOM loads
-document.addEventListener("DOMContentLoaded", removeDuplicateGenres);
-
-
-// Laad items bij het openen van de pagina
-laadItems();
+document.addEventListener("DOMContentLoaded", async () => {
+    await laadItems();
+    removeDuplicateGenres();
+});
 console.log("Shounen: Jongens, actie, avontuur, vriendschap, rivaliteit.");
 console.log("Shoujo: Meisjes, romantiek, relaties, emotie, persoonlijke groei.");
 console.log("Seinen: Volwassen mannen, complexere thema's, vaak realistischer en donkerder.");

@@ -1,3 +1,66 @@
+// IndexedDB helpers
+function openDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('bib', 1);
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('items')) {
+                db.createObjectStore('items', { keyPath: 'id', autoIncrement: true });
+            }
+        };
+        request.onsuccess = (event) => {
+            resolve(event.target.result);
+        };
+        request.onerror = (event) => {
+            reject(event.target.error);
+        };
+    });
+}
+
+async function getAllItems() {
+    const db = await openDB();
+    const transaction = db.transaction(['items'], 'readonly');
+    const store = transaction.objectStore('items');
+    const request = store.getAll();
+    return new Promise((resolve, reject) => {
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function saveItem(item) {
+    const db = await openDB();
+    const transaction = db.transaction(['items'], 'readwrite');
+    const store = transaction.objectStore('items');
+    const request = store.put(item);
+    return new Promise((resolve, reject) => {
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function deleteItem(id) {
+    const db = await openDB();
+    const transaction = db.transaction(['items'], 'readwrite');
+    const store = transaction.objectStore('items');
+    const request = store.delete(id);
+    return new Promise((resolve, reject) => {
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function getItem(id) {
+    const db = await openDB();
+    const transaction = db.transaction(['items'], 'readonly');
+    const store = transaction.objectStore('items');
+    const request = store.get(id);
+    return new Promise((resolve, reject) => {
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
 // Controleer of er een ID in de URL staat
 const urlParams = new URLSearchParams(window.location.search);
 const itemIdFromUrl = urlParams.get("id");
@@ -22,9 +85,15 @@ function filterGenresByType(type) {
     });
 }
 
+// Add event listener for type select change
+const typeSelect = document.getElementById("type");
+typeSelect.addEventListener("change", () => {
+    filterGenresByType(typeSelect.value);
+});
+
 // Laad alle items en toon ze
-function laadAlleItems() {
-    alleItems = JSON.parse(localStorage.getItem('bibliotheekItems') || '[]');
+async function laadAlleItems() {
+    alleItems = await getAllItems();
 }
 
 // Toon zoekresultaten while typing
@@ -70,8 +139,7 @@ if (itemIdFromUrl) {
 }
 
 async function laadItemViaId(id) {
-    const data = JSON.parse(localStorage.getItem('bibliotheekItems') || '[]');
-    const item = data.find(i => i.id == id);
+    const item = await getItem(id);
 
     if (!item) {
         alert("Item niet gevonden!");
@@ -172,6 +240,7 @@ document.getElementById("itemForm").addEventListener("submit", async (e) => {
     const itemId = document.getElementById("itemId").value;
 
     const nieuwItem = {
+        id: parseInt(itemId),
         titel: document.getElementById("titel").value.trim(),
         type: document.getElementById("type").value,
         genres,
@@ -183,13 +252,7 @@ document.getElementById("itemForm").addEventListener("submit", async (e) => {
         datum: document.getElementById("datum").value
     };
 
-    let items = JSON.parse(localStorage.getItem('bibliotheekItems') || '[]');
-    const index = items.findIndex(item => item.id == itemId);
-    if (index !== -1) {
-        nieuwItem.id = parseInt(itemId);
-        items[index] = nieuwItem;
-        localStorage.setItem('bibliotheekItems', JSON.stringify(items));
-    }
+    await saveItem(nieuwItem);
 
     alert("Item succesvol bijgewerkt!");
     e.target.reset();

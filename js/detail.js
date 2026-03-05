@@ -1,3 +1,44 @@
+// IndexedDB helpers
+function openDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('bib', 1);
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('items')) {
+                db.createObjectStore('items', { keyPath: 'id', autoIncrement: true });
+            }
+        };
+        request.onsuccess = (event) => {
+            resolve(event.target.result);
+        };
+        request.onerror = (event) => {
+            reject(event.target.error);
+        };
+    });
+}
+
+async function getItem(id) {
+    const db = await openDB();
+    const transaction = db.transaction(['items'], 'readonly');
+    const store = transaction.objectStore('items');
+    const request = store.get(id);
+    return new Promise((resolve, reject) => {
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function deleteItem(id) {
+    const db = await openDB();
+    const transaction = db.transaction(['items'], 'readwrite');
+    const store = transaction.objectStore('items');
+    const request = store.delete(id);
+    return new Promise((resolve, reject) => {
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
 // Item ID uit URL ophalen
 const urlParams = new URLSearchParams(window.location.search);
 const itemId = urlParams.get('id');
@@ -8,9 +49,8 @@ if (!itemId) {
 }
 
 // Item laden en weergeven
-function laadItem() {
-  const data = JSON.parse(localStorage.getItem('bibliotheekItems') || '[]');
-  const item = data.find(i => i.id == itemId);
+async function laadItem() {
+  const item = await getItem(itemId);
 
   if (!item) {
     alert("Item niet gevonden!");
@@ -39,14 +79,17 @@ function laadItem() {
 }
 
 // Item verwijderen
-function verwijderItem() {
+async function verwijderItem() {
   if (confirm("Weet je zeker dat je dit item wilt verwijderen?")) {
-    let items = JSON.parse(localStorage.getItem('bibliotheekItems') || '[]');
-    items = items.filter(item => item.id != itemId);
-    localStorage.setItem('bibliotheekItems', JSON.stringify(items));
+    await deleteItem(itemId);
     window.location.href = "index.html";
   }
 }
+
+// Laad item bij laden pagina
+document.addEventListener("DOMContentLoaded", () => {
+    laadItem();
+});
 
 // Item laden bij pagina load
 laadItem();
