@@ -7,40 +7,51 @@
 </head>
 <body>
 
-<h1>Overzicht Bibliotheek</h1>
-<div class="header-controls">
-  <a href="toevoeg.html" class="btn-overzicht">New item</a>
-  
-  <div class="filter-container">
-    <div class="filter-group">
-      <label for="typeFilter">Type:</label>
-      <select id="typeFilter">
-        <option value="">-- Alle types --</option>
-      </select>
-    </div>
-    
-    <div class="filter-group">
-      <label for="genreFilter">Genre:</label>
-      <select id="genreFilter">
-        <option value="">-- Alle genres --</option>
-      </select>
-    </div>
-    
-    <div class="filter-group">
-      <label for="statusFilter">Status:</label>
-      <select id="statusFilter">
-        <option value="">-- Alle status --</option>
-        <option value="not_yet">want to watch/read</option>
-        <option value="working_on_it">working on it</option>
-        <option value="finished">finished</option>
-      </select>
-    </div>
-
-    <button id="resetBtn" class="btn-reset">Reset filters</button>
+<nav class="navbar">
+  <div class="nav-container">
+    <h1 class="nav-title">Mijn Bibliotheek</h1>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Overzicht</a></li>
+      <li><a href="toevoeg.html">Nieuw Item</a></li>
+      <li><a href="update.html">Zoeken/Bewerken</a></li>
+    </ul>
   </div>
-</div>
+</nav>
 
-<div class="container" id="lijst"></div>
+<div class="main-content">
+  <h2>Overzicht van Items</h2>
+  <div class="header-controls">
+    <div class="filter-container">
+      <div class="filter-group">
+        <label for="typeFilter">Type:</label>
+        <select id="typeFilter">
+          <option value="">-- Alle types --</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label for="genreFilter">Genre:</label>
+        <select id="genreFilter">
+          <option value="">-- Alle genres --</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label for="statusFilter">Status:</label>
+        <select id="statusFilter">
+          <option value="">-- Alle status --</option>
+          <option value="not_yet">will watch/read</option>
+          <option value="working_on_it">working on it</option>
+          <option value="finished">finished</option>
+        </select>
+      </div>
+
+      <button id="resetBtn" class="btn-reset">Reset filters</button>
+    </div>
+  </div>
+
+  <div class="container" id="lijst"></div>
+</div>
 
 <script src="js/overzicht.js?v=1">
 </script>

@@ -2,18 +2,25 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Item Detail</title>
+  <title>Item Detail - Mijn Bibliotheek</title>
   <link rel="stylesheet" href="css/detail.css">
-  <style>
-
-  </style>
 </head>
 <body>
 
-<div class="detail-wrapper">
-  <a href="index.html" class="back-link">← Terug naar overzicht</a>
+<nav class="navbar">
+  <div class="nav-container">
+    <h1 class="nav-title">Mijn Bibliotheek</h1>
+    <ul class="nav-links">
+      <li><a href="index.html">Overzicht</a></li>
+      <li><a href="toevoeg.html">Nieuw Item</a></li>
+      <li><a href="update.html">Zoeken/Bewerken</a></li>
+    </ul>
+  </div>
+</nav>
 
-  <div id="detailView" class="card">
+<div class="main-content">
+  <div class="detail-wrapper">
+    <div id="detailView" class="card">
     <img id="detailImage" src="" alt="Item" class="detail-image">
     
     <div class="detail-info">

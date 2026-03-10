@@ -3,74 +3,85 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>new item</title>
+  <title>Nieuw Item - Mijn Bibliotheek</title>
   <link rel="stylesheet" href="css/toevoeg.css">
 </head>
 
 <body>
 
-  <h1>Mijn Bibliotheek</h1>
-
-  <!-- Link naar overzicht -->
-  <a href="index.html" class="btn-overzicht">Go back to overview</a>
- <a href="update.html" class="btn-overzicht">Search item</a>
-
-  <h2>New item</h2>
-  <form id="itemForm">
-    <input type="hidden" id="itemId">
-
-    <input type="text" id="titel" placeholder="Titel" required><br>
-    <div class="categorie-upload">
-      <label for="type">Type:</label>
-      <select id="type">
-        <option value="film">Film</option>
-        <option value="serie">Serie</option>
-        <option value="anime">Anime</option>
-        <option value="game">Game</option>
-        <option value="boek">Boek</option>
-        <option value="manga">Manga</option>
-      </select>
+  <nav class="navbar">
+    <div class="nav-container">
+      <h1 class="nav-title">Mijn Bibliotheek</h1>
+      <ul class="nav-links">
+        <li><a href="index.html">Overzicht</a></li>
+        <li><a href="toevoeg.html" class="active">Nieuw Item</a></li>
+        <li><a href="update.html">Zoeken/Bewerken</a></li>
+      </ul>
     </div>
-    <!-- <label><input type="checkbox" value=""> </label> -->
-    <div id="genres">
-      <!-- ================= FILM & SERIE ================= -->
+  </nav>
 
-      <div class="genre-group" data-type="film serie">
+  <div class="main-content">
+    <h2>Nieuw Item Toevoegen</h2>
+    <form id="itemForm">
+      <input type="hidden" id="itemId">
 
-        <!-- MAIN GENRE -->
-        <label><input type="checkbox" value="Action"> Action</label>
-        <label><input type="checkbox" value="Drama"> Drama</label>
-        <label><input type="checkbox" value="Comedy"> Comedy</label>
-        <label><input type="checkbox" value="Romance"> Romance</label>
-        <label><input type="checkbox" value="Thriller"> Thriller</label>
-        <label><input type="checkbox" value="Horror"> Horror</label>
-        <label><input type="checkbox" value="Fantasy"> Fantasy</label>
-        <label><input type="checkbox" value="Sci-Fi"> Sci-Fi</label>
-        <label><input type="checkbox" value="Mystery"> Mystery</label>
-        <label><input type="checkbox" value="Adventure"> Adventure</label>
-
-        <div class="genre-divider"></div>
-
-        <!-- SUBGENRE -->
-        <label><input type="checkbox" value="Psychological"> Psychological</label>
-        <label><input type="checkbox" value="Crime"> Crime</label>
-        <label><input type="checkbox" value="Historical"> Historical</label>
-        <label><input type="checkbox" value="War"> War</label>
-        <label><input type="checkbox" value="Supernatural"> Supernatural</label>
-        <label><input type="checkbox" value="Slice of Life"> Slice of Life</label>
-        <label><input type="checkbox" value="Political"> Political</label>
-        <label><input type="checkbox" value="Family"> Family</label>
-
-        <div class="genre-divider"></div>
-
-        <!-- populair -->
-
-        <label><input type="checkbox" value="Based on True Story"> Based on True Story</label>
-        <label><input type="checkbox" value="Dystopian"> Dystopian</label>
-        <label><input type="checkbox" value="Coming of Age"> Coming of Age</label>
-        <label><input type="checkbox" value="Time Travel"> Time Travel</label>
-
+      <div class="form-group">
+        <label for="titel">Titel:</label>
+        <input type="text" id="titel" placeholder="Titel" required>
       </div>
+
+      <div class="form-group categorie-upload">
+        <label for="type">Type:</label>
+        <select id="type">
+          <option value="film">Film</option>
+          <option value="serie">Serie</option>
+          <option value="anime">Anime</option>
+          <option value="game">Game</option>
+          <option value="boek">Boek</option>
+          <option value="manga">Manga</option>
+        </select>
+      </div>
+    <div class="form-group">
+      <label>Genres:</label>
+      <div id="genres">
+        <!-- ================= FILM & SERIE ================= -->
+
+        <div class="genre-group" data-type="film serie">
+
+          <!-- MAIN GENRE -->
+          <label><input type="checkbox" value="Action"> Action</label>
+          <label><input type="checkbox" value="Drama"> Drama</label>
+          <label><input type="checkbox" value="Comedy"> Comedy</label>
+          <label><input type="checkbox" value="Romance"> Romance</label>
+          <label><input type="checkbox" value="Thriller"> Thriller</label>
+          <label><input type="checkbox" value="Horror"> Horror</label>
+          <label><input type="checkbox" value="Fantasy"> Fantasy</label>
+          <label><input type="checkbox" value="Sci-Fi"> Sci-Fi</label>
+          <label><input type="checkbox" value="Mystery"> Mystery</label>
+          <label><input type="checkbox" value="Adventure"> Adventure</label>
+
+          <div class="genre-divider"></div>
+
+          <!-- SUBGENRE -->
+          <label><input type="checkbox" value="Psychological"> Psychological</label>
+          <label><input type="checkbox" value="Crime"> Crime</label>
+          <label><input type="checkbox" value="Historical"> Historical</label>
+          <label><input type="checkbox" value="War"> War</label>
+          <label><input type="checkbox" value="Supernatural"> Supernatural</label>
+          <label><input type="checkbox" value="Slice of Life"> Slice of Life</label>
+          <label><input type="checkbox" value="Political"> Political</label>
+          <label><input type="checkbox" value="Family"> Family</label>
+
+          <div class="genre-divider"></div>
+
+          <!-- populair -->
+
+          <label><input type="checkbox" value="Based on True Story"> Based on True Story</label>
+          <label><input type="checkbox" value="Dystopian"> Dystopian</label>
+          <label><input type="checkbox" value="Coming of Age"> Coming of Age</label>
+          <label><input type="checkbox" value="Time Travel"> Time Travel</label>
+
+        </div>
       <!-- ================= ANIME ================= -->
 
       <div class="genre-group" data-type="anime">
@@ -229,35 +240,45 @@
 
     </div>
 
-    <div class="afbeelding-upload">
+    <div class="form-group afbeelding-upload">
       <label for="afbeelding">Afbeelding:</label>
       <input type="file" id="afbeelding">
     </div>
 
-    <input type="url" id="bron" placeholder="Link naar originele werk">
-    <textarea id="beschrijving" placeholder="Beschrijving"></textarea>
-    <input type="number" id="rating" placeholder="Rating (1-10)" min="1" max="10"><br>
+    <div class="form-group">
+      <label for="bron">Link naar originele werk:</label>
+      <input type="url" id="bron" placeholder="Link naar originele werk">
+    </div>
 
-    <div class="status">
+    <div class="form-group">
+      <label for="beschrijving">Beschrijving:</label>
+      <textarea id="beschrijving" placeholder="Beschrijving"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="rating">Rating (1-10):</label>
+      <input type="number" id="rating" placeholder="Rating (1-10)" min="1" max="10">
+    </div>
+
+    <div class="form-group status">
       <label for="status">Status:</label>
       <select id="status">
-        <option value="not_yet">want to watch/read</option>
+        <option value="not_yet">will watch/read</option>
         <option value="working_on_it">working on it</option>
         <option value="finished">finished</option>
       </select>
     </div>
-    <div class="datum">
+
+    <div class="form-group datum">
       <label for="datum">Date of completion:</label>
       <input type="date" id="datum">
     </div>
 
-    <button type="submit" id="submitBtn">Save</button>
+    <button type="submit" id="submitBtn">Opslaan</button>
   </form>
 
-  <h2>Overview</h2>
+  <h2>Overzicht</h2>
   <div class="container" id="lijst"></div>
-
-  <a href="update.html" class="btn-overzicht">Search item</a>
 
   <script src="js/index.js?v=1"></script>
 

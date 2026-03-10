@@ -3,26 +3,39 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Item Aanpassen</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>Zoeken/Bewerken - Mijn Bibliotheek</title>
+  <link rel="stylesheet" href="css/update.css">
 </head>
 
 <body>
-  <a href="index.html" class="btn-overzicht">Go back to overview</a>
-  <a href="toevoeg.html" class="btn-overzicht"> new item </a>
-  <h1>Item Aanpassen</h1>
 
-  <form id="zoekForm">
-    <div class="zoek-container">
-      <label for="zoekId">Selecteer of zoek item:</label>
-      <input type="text" id="zoekId" placeholder="Type titel om te zoeken...">
-      <select id="itemSelect" style="display:none;">
-        <option value="">-- Selecteer item --</option>
-      </select>
-      <div id="zoekResultaten" class="zoek-resultaten"></div>
+  <nav class="navbar">
+    <div class="nav-container">
+      <h1 class="nav-title">Mijn Bibliotheek</h1>
+      <ul class="nav-links">
+        <li><a href="index.html">Overzicht</a></li>
+        <li><a href="toevoeg.html">Nieuw Item</a></li>
+        <li><a href="update.html" class="active">Zoeken/Bewerken</a></li>
+      </ul>
     </div>
-    <button type="submit">Laad item</button>
-  </form>
+  </nav>
+
+  <div class="main-content">
+    <h2>Item Zoeken en Bewerken</h2>
+
+    <form id="zoekForm">
+      <div class="zoek-container">
+        <div class="form-group">
+          <label for="zoekId">Selecteer of zoek item:</label>
+          <input type="text" id="zoekId" placeholder="Type titel om te zoeken...">
+          <select id="itemSelect" style="display:none;">
+            <option value="">-- Selecteer item --</option>
+          </select>
+          <div id="zoekResultaten" class="zoek-resultaten"></div>
+        </div>
+        <button type="submit">Laad item</button>
+      </div>
+    </form>
 
   <form id="itemForm" style="display:none;">
     <input type="hidden" id="itemId">
