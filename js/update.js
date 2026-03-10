@@ -133,7 +133,7 @@ document.getElementById("zoekId").addEventListener("input", async (e) => {
 
 // Laad automatisch item als ID in URL staat
 if (itemIdFromUrl) {
-    laadItemViaId(itemIdFromUrl);
+    laadItemViaId(parseInt(itemIdFromUrl));
 } else {
     laadAlleItems();
 }
@@ -202,7 +202,7 @@ document.getElementById("zoekForm").addEventListener("submit", async (e) => {
     // Zoek op geselecteerde ID of op titel
     let item = null;
     if (selectedId) {
-        item = alleItems.find(i => i.id == selectedId);
+        item = alleItems.find(i => i.id === parseInt(selectedId));
     } else {
         item = alleItems.find(i => i.titel.toLowerCase() === zoekInput.toLowerCase());
     }

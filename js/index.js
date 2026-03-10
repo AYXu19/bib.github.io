@@ -102,7 +102,7 @@ function updateGenres() {
         const types = group.dataset.type.split(" ");
 
         if (types.includes(selectedType)) {
-            //inportant !! //grid anders werkt niet
+            //inportant !! //grid anders werkt niet.        :)
             group.style.display = "grid";
         } else {
             group.style.display = "none";
@@ -184,16 +184,14 @@ async function handleFormSubmit(e) {
         // UPDATE item
         nieuwItem.id = parseInt(itemId);
         await saveItem(nieuwItem);
+        // Reset formulier na update
+        e.target.reset();
+        document.getElementById("itemId").value = "";
         document.getElementById("submitBtn").textContent = "Opslaan";
     } else {
         // Nieuw item
         await saveItem(nieuwItem);
     }
-
-    // Reset formulier
-    e.target.reset();
-    document.getElementById("itemId").value = "";
-    document.getElementById("submitBtn").textContent = "Opslaan";
 
     // Herlaad lijst
     await laadItems();
